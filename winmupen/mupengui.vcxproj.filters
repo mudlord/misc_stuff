@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\other">
+      <UniqueIdentifier>{c8bbff24-ebfa-448d-9127-617b2d67c0ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\mupenapi">
+      <UniqueIdentifier>{1562ac82-51b0-4adc-8c16-d18380a865c4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+    <None Include="emu_wtl.ico">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="small.ico">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="icon.ico" />
+    <None Include="mupen64plus.ico" />
+    <None Include="mupenicon_large.bmp" />
+    <None Include="mupen64logo.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DlgTabCtrl.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DropFileTarget.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="emu_wtl.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utf8conv.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mupenapi\m64p_common.h">
+      <Filter>Source Files\mupenapi</Filter>
+    </ClInclude>
+    <ClInclude Include="mupenapi\m64p_config.h">
+      <Filter>Source Files\mupenapi</Filter>
+    </ClInclude>
+    <ClInclude Include="mupenapi\m64p_frontend.h">
+      <Filter>Source Files\mupenapi</Filter>
+    </ClInclude>
+    <ClInclude Include="mupenapi\m64p_plugin.h">
+      <Filter>Source Files\mupenapi</Filter>
+    </ClInclude>
+    <ClInclude Include="mupenapi\m64p_types.h">
+      <Filter>Source Files\mupenapi</Filter>
+    </ClInclude>
+    <ClInclude Include="mupenapi\m64p_vidext.h">
+      <Filter>Source Files\mupenapi</Filter>
+    </ClInclude>
+    <ClInclude Include="mupenapi\mupencpp.h">
+      <Filter>Source Files\mupenapi</Filter>
+    </ClInclude>
+    <ClInclude Include="SDL_keysym.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MyWindow_sdl.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pluginsview.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="rombrowser.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mupenapi\sdl_key_converter.h">
+      <Filter>Source Files\mupenapi</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="emu_wtl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mupenapi\osal_dynamiclib_win32.cpp">
+      <Filter>Source Files\mupenapi</Filter>
+    </ClCompile>
+    <ClCompile Include="mupenapi\osal_files_win32.cpp">
+      <Filter>Source Files\mupenapi</Filter>
+    </ClCompile>
+    <ClCompile Include="mupenapi\mupencpp_sdl.cpp">
+      <Filter>Source Files\mupenapi</Filter>
+    </ClCompile>
+    <ClCompile Include="rombrowser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mupenapi\sdl_key_converter.cpp">
+      <Filter>Source Files\mupenapi</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="emu_wtl.rc">
+      <Filter>Source Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

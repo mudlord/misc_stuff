@@ -5,6 +5,7 @@
 #include <iostream>
 using namespace std;
 #include <wincrypt.h>
+#include <filesystem>
 
 
 using namespace std;
@@ -48,7 +49,7 @@ public:
 		this->y += x;
 
 	}
-	virtual int fuck() = 0;
+	int fuck();
 
 };
 
@@ -118,7 +119,6 @@ void TestClass::add(int xshit, int yshit) {
 void classes()
 {
 	fuckitclass fuckyou;
-	abstract_class *fuc1 = (abstract_class*) & fuckyou;
 	derived_class test;
 	test.set_values(0xFF, 0x90);
 	int arr = test.res();
@@ -139,19 +139,100 @@ typedef union {
 	} b;
 } Register;
 
+struct keydata_format {
+	uint32_t checksum;
+	uint16_t feature_flags;
+	uint16_t magic;
+	uint32_t serial;
+	uint32_t random;
+};
+
 typedef struct str {
 	int thing1;
 	bool thing2;
 	float thing3;
 	char thing4[50];
 };
+//filesystem
+void filesystems()
+{
+	std::filesystem::path path = std::filesystem::current_path();
+	string paths = path.generic_string();
+	for (auto& entry : std::filesystem::directory_iterator(path))
+	{
+		string str = entry.path().string();
+		if (entry.is_regular_file() && entry.path().extension() == ".dll")
+		{
+
+		}
+	}
+}
+
+//unique ptrs
+unsigned get_filesize(FILE* fp)
+{
+	unsigned size = 0;
+	unsigned pos = ftell(fp);
+	fseek(fp, 0, SEEK_END);
+	size = ftell(fp);
+	fseek(fp, pos, SEEK_SET);
+	return size;
+}
+
+void unique_ptrs_lambda()
+{
+	//the unique ptr will automatically release memory at end of scope
+	auto tmp = std::make_unique<uint8_t[]>(0x10000);
+	memset(tmp.get(), 0, 0x10000);
+
+	//basically define functions inside functions!
+	auto bufferlevel = []()
+	{
+		return double((0x8000 - (int)0x2000 /0x8000));
+	};
+	double buf = bufferlevel();
+}
+
+std::vector<uint8_t> load_data(const char* path, unsigned* size)
+{
+	auto input = unique_ptr<FILE, int (*)(FILE*)>(fopen(path, "rb"), &fclose);
+	if (!input)
+		return {};
+	unsigned Size = get_filesize(input.get());
+	*size = Size;
+	std::vector<uint8_t> Memory(Size, 0);
+	int res = fread((uint8_t*)Memory.data(), 1, Size, input.get());
+	return Memory;
+}
+bool save_data(unsigned char* data, unsigned size, const char* path)
+{
+	auto input = unique_ptr<FILE, int (*)(FILE*)>(fopen(path, "wb"), &fclose);
+	if (!input)
+		return false;
+	fwrite(data, 1, size, input.get());
+	return true;
+}
+unsigned get_filesize(const char* path)
+{
+	//auto close/open of FILE ptrs
+	auto input = unique_ptr<FILE, int (*)(FILE*)>(fopen(path, "rb"), &fclose);
+	if (!input)
+		return 0;
+	unsigned size = get_filesize(input.get());
+	return size;
+}
+
+void vector_appendbytes(std::vector<uint8_t>& vec, uint8_t* bytes, size_t len)
+{
+	vec.insert(vec.end(), bytes, bytes + len);
+}
 
 void vectorsandstructs()
 { 
 	vector<str>shit_vector;
 
-	//zero struct
-	//for strings you will need to allocate and memset
+	//zero struct and init it
+	//for strings/pointers/buffers you will need to allocate and memset
 	//UNLESS you statically set them
 	str shit={0};
 	shit.thing1 = 1;
@@ -159,6 +240,14 @@ void vectorsandstructs()
 	shit.thing3 = 0.01;
 	strcpy(shit.thing4, "shitfuck");
 	shit_vector.push_back(shit);
+	uint8_t key_buffer[128] = { 0 };
+	//get a pointer into a bytebuffer, using a struct to set contents
+	struct keydata_format* key = (struct keydata_format*)key_buffer;
+	key->checksum = 0xDEADBEEF;
+	key->feature_flags = 0xFFFF;
+	key->magic = 0x1979;
+	key->random = 0;
+	key->serial = rand();
 
 }
 
@@ -238,8 +327,11 @@ void logic()
 
 void main()
 {
+	srand(time(NULL));
 	loops();
 	logic();
 	vectorsandstructs();
-	
+	classes();
+	unique_ptrs_lambda();
+	filesystems();
 }

@@ -30,6 +30,31 @@ typedef struct str {
 	char thing4[50];
 };
 
+//global variables as structs
+//use extern when in outside files to link to
+struct str2 {
+	int thing1;
+	bool thing2;
+	float thing3;
+	char thing4[50];
+};
+str2 structie = { 0 };
+
+void thing1()
+{
+	str structs = { 0 };
+	thing2(&structs);
+	structie.thing1 = 0xFF;
+}
+
+void thing2(str* structs)
+{
+	structs->thing1 = 1;
+	structs->thing2 = false;
+	structs->thing3 = 0.1;
+	strcpy(structs->thing4, "chocobo");
+}
+
 void vector_appendbytes(std::vector<uint8_t>& vec, uint8_t* bytes, size_t len)
 {
 	vec.insert(vec.end(), bytes, bytes + len);
@@ -57,4 +82,7 @@ void vectorsandstructs()
 	key->random = 0;
 	key->serial = rand();
 
+	thing1();
+
 }
+

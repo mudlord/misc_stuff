@@ -9,6 +9,52 @@ using namespace std;
 
 using namespace std;
 
+
+class virtclass_interface
+{
+public:
+	virtual ~virtclass_interface() {}
+
+	virtual void fuck1() = 0;
+
+	virtual void fuck2() = 0;
+};
+
+class intf_thing : virtclass_interface
+{
+protected:
+	int shit1, shit2;
+public:
+	intf_thing()
+	{
+		shit1 = 0x44;
+		shit2 = 0xFF;
+
+	}
+
+	virtual ~intf_thing() {}
+
+	virtual void fuck1()
+	{
+		shit1 ^= shit2;
+		shit2 ^= shit1;
+
+	}
+
+	virtual void fuck2()
+	{
+		shit1 *= shit2;
+		shit2 *= shit1;
+
+	}
+};
+
+
+virtclass_interface* create_test()
+{
+	return new intf_thing;
+}
+
 //useful when you only need *ONE* class instance at a time!
 //Quite hacky!
 class staticclass {

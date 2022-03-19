@@ -11,7 +11,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="cpp_loops.cpp" />
+    <ClCompile Include="cpp_uniqueptr.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="cpp_classes.cpp" />
+    <ClCompile Include="cpp_vecsandstructs.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{5DF0CD90-F528-461E-901A-865C65518EED}</ProjectGuid>

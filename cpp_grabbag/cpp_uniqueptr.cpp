@@ -42,6 +42,7 @@ std::vector<uint8_t> load_data(const char* path, unsigned* size)
 	*size = Size;
 	std::vector<uint8_t> Memory(Size, 0);
 	int res = fread((uint8_t*)Memory.data(), 1, Size, input.get());
+
 	return Memory;
 }
 bool save_data(unsigned char* data, unsigned size, const char* path)

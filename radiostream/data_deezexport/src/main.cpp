@@ -11,22 +11,36 @@
 #include <chrono>
 #include <thread>
 
+#include <bass.h>
+
 using namespace std;
 using namespace picojson;
 
-const char* wis = " \t\n\r\f\v";
-inline std::string& rtrim(std::string& s, const char* t = wis){
-    s.erase(s.find_last_not_of(t) + 1);
-    return s;
+struct songdb
+{
+  string dataentry;
+  string artist;
+  string songtitle;
+  int songcnt;
+};
+
+std::vector<songdb> songmap;
+
+const char *wis = " \t\n\r\f\v";
+inline std::string &rtrim(std::string &s, const char *t = wis)
+{
+  s.erase(s.find_last_not_of(t) + 1);
+  return s;
 }
-inline std::string& ltrim(std::string& s, const char* t = wis){
-    s.erase(0, s.find_first_not_of(t));
-    return s;
+inline std::string &ltrim(std::string &s, const char *t = wis)
+{
+  s.erase(0, s.find_first_not_of(t));
+  return s;
 }
 // trim from both ends of string (right then left)
-inline std::string& trim(std::string& s, const char* t = wis)
+inline std::string &trim(std::string &s, const char *t = wis)
 {
-    return ltrim(rtrim(s, t), t);
+  return ltrim(rtrim(s, t), t);
 }
 
 std::string url_encode(const string &value)
@@ -61,8 +75,6 @@ std::string url_encode(const string &value)
   return escaped.str();
 }
 
-
-
 size_t json_callback(
     const char *in,
     size_t size,
@@ -74,12 +86,33 @@ size_t json_callback(
   return totalBytes;
 }
 
-struct songdb {
-    string dataentry;
-    string artist;
-    string songtitle;
-    int songcnt;
-};
+void parse_songtitle(string segment, vector<songdb> &map)
+{
+  string songtitle;
+  string songtitle_real;
+  string songcount;
+  string songartist;
+  size_t idx_dash = segment.find('-');
+  size_t idx2 = segment.find_last_of('"');
+  songartist = segment.substr(1, idx_dash - 1);
+  songartist = trim(songartist);
+  songtitle = segment.substr(1, idx2 - 1);
+  songtitle = trim(songtitle);
+  songtitle_real = segment.substr(idx_dash + 1, (idx2) - (idx_dash + 1));
+  songtitle_real = trim(songtitle_real);
+  songcount = segment.substr(idx2 + 2);
+  int songcnt = stoi(songcount);
+
+  songdb db = {songtitle, songartist, songtitle_real, songcnt};
+
+  auto check = [&db](const songdb &x)
+  { return x.dataentry == db.dataentry; };
+  auto it = std::find_if(map.begin(), map.end(), check);
+  if (it == map.end())
+    map.push_back(db);
+  else
+    (*it).songcnt += songcnt;
+}
 
 void parse_file(string path, vector<songdb> &map)
 {
@@ -88,42 +121,123 @@ void parse_file(string path, vector<songdb> &map)
   string segment;
   while (std::getline(file, segment))
   {
-    
+
     string songtitle;
     string songtitle_real;
     string songcount;
     string songartist;
     size_t idx_dash = segment.find('-');
     size_t idx2 = segment.find_last_of('"');
-    songartist = segment.substr(1,idx_dash-1);
+    songartist = segment.substr(1, idx_dash - 1);
     songartist = trim(songartist);
     songtitle = segment.substr(1, idx2 - 1);
     songtitle = trim(songtitle);
-    songtitle_real = segment.substr(idx_dash+1,(idx2)-(idx_dash+1));
+    songtitle_real = segment.substr(idx_dash + 1, (idx2) - (idx_dash + 1));
     songtitle_real = trim(songtitle_real);
     songcount = segment.substr(idx2 + 2);
     int songcnt = stoi(songcount);
 
-    songdb db={songtitle,songartist,songtitle_real,songcnt};
+    songdb db = {songtitle, songartist, songtitle_real, songcnt};
 
-    auto check = [&db](const songdb& x) { return x.dataentry == db.dataentry;};
-    auto it= std::find_if(map.begin(), map.end(),check);
-    if(it == map.end())
-    map.push_back(db);
+    auto check = [&db](const songdb &x)
+    { return x.dataentry == db.dataentry; };
+    auto it = std::find_if(map.begin(), map.end(), check);
+    if (it == map.end())
+      map.push_back(db);
     else
-    (*it).songcnt += songcnt;
+      (*it).songcnt += songcnt;
   }
+}
+
+HSTREAM chan;
+
+std::string getstrtitle()
+{
+  string title;
+  const char *meta = BASS_ChannelGetTags(chan, BASS_TAG_META);
+  if (meta)
+  {                                                // got Shoutcast metadata
+    const char *p = strstr(meta, "StreamTitle='"); // locate the title
+    if (p)
+    {
+      const char *p2 = strstr(p, "';"); // locate the end of it
+      if (p2)
+      {
+        char *t = strdup(p + 13);
+        t[p2 - (p + 13)] = 0;
+        title = t;
+        free(t);
+        return title;
+      }
+    }
+  }
+  return "";
+}
+
+int runsong(string songtitle, string artist)
+{
+  auto curl = std::unique_ptr<CURL,
+                              decltype(&curl_easy_cleanup)>(curl_easy_init(), curl_easy_cleanup);
+  // https://api.deezer.com/search?q=artist:"aloe blacc" track:"i need a dollar"
+  string URLtoprobe = "https://api.deezer.com/search?q=artist:\"";
+  URLtoprobe += artist + "\"" + " track:" + "\"" + songtitle + "\"";
+  URLtoprobe = url_encode(URLtoprobe);
+  unique_ptr<string> json_data(new string());
+  curl_easy_setopt(curl.get(), CURLOPT_WRITEFUNCTION, json_callback);
+  curl_easy_setopt(curl.get(), CURLOPT_URL, URLtoprobe.c_str());
+  curl_easy_setopt(curl.get(), CURLOPT_WRITEDATA, json_data.get());
+  curl_easy_setopt(curl.get(), CURLOPT_USERAGENT, "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:99.0) Gecko/20100101 Firefox/99.0");
+  CURLcode res = curl_easy_perform(curl.get());
+  chrono::seconds dura(2);
+  this_thread::sleep_for(dura); // cheapass delay to work around api limits
+
+  if (res != CURLE_OK)
+  {
+    fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
+    return 1;
+  }
+  else
+  {
+
+    picojson::value v;
+    string err = picojson::get_last_error();
+    parse(v, json_data.get()->begin(), json_data.get()->end(), &err);
+    if (!err.empty())
+      return 0;
+
+    if (!v.is<picojson::object>())
+      return 0;
+    picojson::array list = v.get("data").get<picojson::array>();
+    for (auto &iter : list)
+    {
+      if (iter.get("title").get<string>() == songtitle)
+        if (iter.get("artist").get("name").get<string>() == artist)
+        {
+
+          string songl = iter.get("link").get<string>();
+          // songlists << songl << std::endl;
+          return 1;
+        }
+    }
+  }
+}
+
+void CALLBACK MetaSync(HSYNC handle, DWORD channel, DWORD data, void *user)
+{
+  string songtitle;
+  songtitle = getstrtitle();
+  parse_songtitle(songtitle, songmap);
 }
 
 int listproc(vector<songdb> &map)
 {
-  auto curl = std::unique_ptr<CURL, 
-  decltype(&curl_easy_cleanup)>(curl_easy_init(), curl_easy_cleanup);
+  auto curl = std::unique_ptr<CURL,
+                              decltype(&curl_easy_cleanup)>(curl_easy_init(), curl_easy_cleanup);
 
   if (!curl)
   {
     fprintf(stderr, "Error: curl_easy_init failed.\n");
-    
+
     return 1;
   }
 
@@ -132,9 +246,9 @@ int listproc(vector<songdb> &map)
 
   for (auto &x : map)
   {
-    //https://api.deezer.com/search?q=artist:"aloe blacc" track:"i need a dollar"
+    // https://api.deezer.com/search?q=artist:"aloe blacc" track:"i need a dollar"
     string URLtoprobe = "https://api.deezer.com/search?q=artist:\"";
-    URLtoprobe += x.artist +"\"" + " track:"+"\""+x.songtitle+"\"";
+    URLtoprobe += x.artist + "\"" + " track:" + "\"" + x.songtitle + "\"";
     URLtoprobe = url_encode(URLtoprobe);
     unique_ptr<string> json_data(new string());
     curl_easy_setopt(curl.get(), CURLOPT_WRITEFUNCTION, json_callback);
@@ -164,10 +278,10 @@ int listproc(vector<songdb> &map)
       picojson::array list = v.get("data").get<picojson::array>();
       for (auto &iter : list)
       {
-        if (iter.get("title").get<string>()==x.songtitle);
-          if (iter.get("artist").get("name").get<string>()==x.artist)
+        if (iter.get("title").get<string>() == x.songtitle)
+          if (iter.get("artist").get("name").get<string>() == x.artist)
           {
-            
+
             string songl = iter.get("link").get<string>();
             songlists << songl << std::endl;
             break;
@@ -180,7 +294,7 @@ int listproc(vector<songdb> &map)
 
 int main(int argc, char *argv[])
 {
-  std::vector<songdb> songmap;
+  BASS_Init(-1, 44100, 0, NULL, NULL);
 
   filesystem::path path = filesystem::current_path();
   for (auto &entry : filesystem::directory_iterator(path))
@@ -191,5 +305,6 @@ int main(int argc, char *argv[])
   }
 
   listproc(songmap);
+  BASS_Free();
   return 0;
 }

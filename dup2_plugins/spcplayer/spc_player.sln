@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "spc_player", "plugin_example\plugin_example.vcxproj", "{FC1BD1FC-D6A9-7074-D751-32601CE798F8}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "spc_playerdll", "plugin_example_patcherdll\plugin_example_patcherdll.vcxproj", "{057EC86F-7291-1D40-D0A0-AEB2CF875487}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+		Template|Win32 = Template|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FC1BD1FC-D6A9-7074-D751-32601CE798F8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FC1BD1FC-D6A9-7074-D751-32601CE798F8}.Debug|Win32.Build.0 = Debug|Win32
+		{FC1BD1FC-D6A9-7074-D751-32601CE798F8}.Release|Win32.ActiveCfg = Release|Win32
+		{FC1BD1FC-D6A9-7074-D751-32601CE798F8}.Release|Win32.Build.0 = Release|Win32
+		{FC1BD1FC-D6A9-7074-D751-32601CE798F8}.Template|Win32.ActiveCfg = Release|Win32
+		{FC1BD1FC-D6A9-7074-D751-32601CE798F8}.Template|Win32.Build.0 = Release|Win32
+		{057EC86F-7291-1D40-D0A0-AEB2CF875487}.Debug|Win32.ActiveCfg = Debug|Win32
+		{057EC86F-7291-1D40-D0A0-AEB2CF875487}.Debug|Win32.Build.0 = Debug|Win32
+		{057EC86F-7291-1D40-D0A0-AEB2CF875487}.Release|Win32.ActiveCfg = Release|Win32
+		{057EC86F-7291-1D40-D0A0-AEB2CF875487}.Release|Win32.Build.0 = Release|Win32
+		{057EC86F-7291-1D40-D0A0-AEB2CF875487}.Template|Win32.ActiveCfg = Template|Win32
+		{057EC86F-7291-1D40-D0A0-AEB2CF875487}.Template|Win32.Build.0 = Template|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

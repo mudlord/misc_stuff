@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp3_player", "plugin_example\plugin_example.vcxproj", "{F541E17E-A9BF-AC65-9AD3-EDB12FD8FA46}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mp3_playerdll", "plugin_example_patcherdll\plugin_example_patcherdll.vcxproj", "{948F76D2-6B90-10E9-65FC-BF6098EC94F5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+		Template|Win32 = Template|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F541E17E-A9BF-AC65-9AD3-EDB12FD8FA46}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F541E17E-A9BF-AC65-9AD3-EDB12FD8FA46}.Debug|Win32.Build.0 = Debug|Win32
+		{F541E17E-A9BF-AC65-9AD3-EDB12FD8FA46}.Release|Win32.ActiveCfg = Release|Win32
+		{F541E17E-A9BF-AC65-9AD3-EDB12FD8FA46}.Release|Win32.Build.0 = Release|Win32
+		{F541E17E-A9BF-AC65-9AD3-EDB12FD8FA46}.Template|Win32.ActiveCfg = Release|Win32
+		{F541E17E-A9BF-AC65-9AD3-EDB12FD8FA46}.Template|Win32.Build.0 = Release|Win32
+		{948F76D2-6B90-10E9-65FC-BF6098EC94F5}.Debug|Win32.ActiveCfg = Debug|Win32
+		{948F76D2-6B90-10E9-65FC-BF6098EC94F5}.Debug|Win32.Build.0 = Debug|Win32
+		{948F76D2-6B90-10E9-65FC-BF6098EC94F5}.Release|Win32.ActiveCfg = Release|Win32
+		{948F76D2-6B90-10E9-65FC-BF6098EC94F5}.Release|Win32.Build.0 = Release|Win32
+		{948F76D2-6B90-10E9-65FC-BF6098EC94F5}.Template|Win32.ActiveCfg = Template|Win32
+		{948F76D2-6B90-10E9-65FC-BF6098EC94F5}.Template|Win32.Build.0 = Template|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
